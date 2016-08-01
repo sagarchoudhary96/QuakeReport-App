@@ -26,7 +26,7 @@ public class Earthquake {
         return location;
     }
 
-    public Long getDate() {
+    public Long getTime() {
         return time;
     }
 
