@@ -16,6 +16,8 @@ import java.util.Date;
  */
 public class EarthquakeAdapter extends ArrayAdapter<Earthquake> {
 
+    private static final String LOCATION_SEPARATOR = "of";
+
     public EarthquakeAdapter(Context context, ArrayList<Earthquake> earthquakes) {
         super(context, 0, earthquakes);
     }
@@ -35,8 +37,30 @@ public class EarthquakeAdapter extends ArrayAdapter<Earthquake> {
         TextView magnitude_textview = (TextView) listItemView.findViewById(R.id.magnitude);
         magnitude_textview.setText(currentEarthquake.getMagnitude());
 
-        TextView location_textview = (TextView) listItemView.findViewById(R.id.location);
-        location_textview.setText(currentEarthquake.getLocation());
+        // to get the location of the current earthquake
+        String currentLocation = currentEarthquake.getLocation();
+
+        // variables for storing offset location and primary location
+        String location_primary;
+        String location_offset;
+
+        if (currentLocation.contains(LOCATION_SEPARATOR)) {
+            String[] location_parts = currentLocation.split(LOCATION_SEPARATOR);
+
+            location_offset = location_parts[0] +  " of";
+            location_primary = location_parts[1];
+        }
+        else {
+            // if there are no km's gives then offset location is set to "Near the"
+            location_offset = getContext().getString(R.string.near_the);
+            location_primary = currentLocation;
+        }
+
+        TextView offsetLocation_textview = (TextView) listItemView.findViewById(R.id.location_offset);
+        offsetLocation_textview.setText(location_offset);
+
+        TextView primaryLocation_textview = (TextView) listItemView.findViewById(R.id.location_primary);
+        primaryLocation_textview.setText(location_primary);
 
         TextView date_textview = (TextView) listItemView.findViewById(R.id.date);
 

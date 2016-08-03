@@ -15,11 +15,18 @@
         tools:text = "6.7"/>
 
     <TextView
-        android:id="@+id/location"
+        android:id="@+id/location_offset"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        tools:text = "27 km S of"/>
+    <TextView
+        android:id="@+id/location_primary"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
         tools:text = "Gurgaon, HR"/>
+
 
     <TextView
         android:id="@+id/date"

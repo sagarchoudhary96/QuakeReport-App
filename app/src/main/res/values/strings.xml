@@ -15,4 +15,7 @@
 -->
 <resources>
     <string name="app_name">Quake Report</string>
+
+    <!--Default textview to show location if no km's are not specified-->
+    <string name="near_the">Near the</string>
 </resources>
