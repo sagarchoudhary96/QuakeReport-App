@@ -6,19 +6,19 @@ package com.example.android.quakereport;
 public class Earthquake {
 
     // variable to store earthquake information
-    private String magnitude;
+    private double magnitude;
     private String location;
     private Long time;
 
     //Constructor
-    public Earthquake(String mMagnitude, String mLocation, Long mTime) {
+    public Earthquake(double mMagnitude, String mLocation, Long mTime) {
         this.magnitude = mMagnitude;
         this.location = mLocation;
         this.time = mTime;
     }
 
     //getter Function
-    public String getMagnitude() {
+    public double getMagnitude() {
         return magnitude;
     }
 
