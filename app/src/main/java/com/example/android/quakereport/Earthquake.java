@@ -9,25 +9,36 @@ public class Earthquake {
     private double magnitude;
     private String location;
     private Long time;
+    private String url;
 
     //Constructor
-    public Earthquake(double mMagnitude, String mLocation, Long mTime) {
+    public Earthquake(double mMagnitude, String mLocation, Long mTime, String mUrl) {
         this.magnitude = mMagnitude;
         this.location = mLocation;
         this.time = mTime;
+        this.url = mUrl;
     }
 
     //getter Function
+
+    // return the magnitude of the earthquake
     public double getMagnitude() {
         return magnitude;
     }
 
+    // return the location of the earthquake
     public String getLocation() {
         return location;
     }
 
+    // return the time at which earthquake occurs
     public Long getTime() {
         return time;
+    }
+
+    // return the url of the webpage
+    public String getUrl() {
+        return url;
     }
 
 
