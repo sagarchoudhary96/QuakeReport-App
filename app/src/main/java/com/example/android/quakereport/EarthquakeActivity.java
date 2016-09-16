@@ -17,7 +17,6 @@ package com.example.android.quakereport;
 
 import android.content.Intent;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
@@ -26,10 +25,15 @@ import android.widget.ListView;
 
 import java.util.ArrayList;
 
-public class EarthquakeActivity extends AppCompatActivity {
+public class EarthquakeActivity extends AppCompatActivity implements android.app.LoaderManager.LoaderCallbacks<ArrayList<Earthquake>> {
 
     /** URL for earthquake data from the USGS dataset */
     private static final String REQUEST_URL = " http://earthquake.usgs.gov/fdsnws/event/1/query?format=geojson&eventtype=earthquake&orderby=time&minmag=6&limit=10";
+
+    /**
+    * Constant value for the earthquake loader ID.
+    */
+    private static final int EARTHQUAKE_LOADER_ID = 1;
 
     /** Adapter for the list of earthquakes */
     private EarthquakeAdapter adapter;
@@ -65,41 +69,38 @@ public class EarthquakeActivity extends AppCompatActivity {
         });
 
 
-        //Execute Async Task
-        new EarthquakeAsyncTask().execute(REQUEST_URL);
+        // Get a reference to the LoaderManager, in order to interact with loaders.
+        android.app.LoaderManager loaderManager = getLoaderManager();
+
+        // Initialize the loader. Pass in the int ID constant defined above and pass in null for
+        // the bundle. Pass in this activity for the LoaderCallbacks parameter (which is valid
+        // because this activity implements the LoaderCallbacks interface).
+        loaderManager.initLoader(EARTHQUAKE_LOADER_ID, null, this);
+
 
     }
 
+    @Override
+    public android.content.Loader<ArrayList<Earthquake>> onCreateLoader(int id, Bundle args) {
+        return new EarthquakeLoader(this, REQUEST_URL);
+    }
 
-    /**
-     *  Async Task to fetch earthquake Date and update the UI
-     */
-    private class EarthquakeAsyncTask extends AsyncTask<String, Void, ArrayList<Earthquake>>{
+    @Override
+    public void onLoadFinished(android.content.Loader<ArrayList<Earthquake>> loader, ArrayList<Earthquake> earthquakes) {
+        // Clear the adapter of previous earthquake data
+        adapter.clear();
 
-        @Override
-        protected ArrayList<Earthquake> doInBackground(String... urls) {
-
-            // Don't perform the request if there are no URLs, or the first URL is null.
-            if (urls.length < 1 || urls[0] == null) {
-                return null;
-            }
-
-            ArrayList<Earthquake> Earthquakes = QueryUtils.fetchEarthquakeList(urls[0]);
-
-            return Earthquakes;
-
-        }
-
-        @Override
-        protected void onPostExecute(ArrayList<Earthquake> earthquakes) {
-
-            // clears the data of previous list
-            adapter.clear();
-            if (earthquakes.isEmpty()){
-                return;
-            }
-            // update the UI with the list of Earthquakes
+        // If there is a valid list of {@link Earthquake}s, then add them to the adapter's
+        // data set. This will trigger the ListView to update.
+        if (earthquakes != null && !earthquakes.isEmpty()) {
             adapter.addAll(earthquakes);
         }
     }
+
+    @Override
+    public void onLoaderReset(android.content.Loader<ArrayList<Earthquake>> loader) {
+        // Loader reset, so we can clear out our existing data.
+        adapter.clear();
+    }
+
 }
