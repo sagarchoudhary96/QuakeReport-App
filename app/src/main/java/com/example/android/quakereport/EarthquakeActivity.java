@@ -22,6 +22,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -42,6 +43,9 @@ public class EarthquakeActivity extends AppCompatActivity implements android.app
     /**Empty Text View*/
     TextView emptyTextView;
 
+    /**Progress Bar View*/
+    ProgressBar mProgressBar;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -50,11 +54,17 @@ public class EarthquakeActivity extends AppCompatActivity implements android.app
         // Find a reference to the {@link ListView} in the layout
         final ListView earthquakeListView = (ListView) findViewById(R.id.list);
 
+        //Find the Reference to {@link EmptyTextView} to be Displayed when no data is recieved
         emptyTextView = (TextView)findViewById(R.id.Empty_txtview);
         earthquakeListView.setEmptyView(emptyTextView);
 
+        //Find the reference to the progress bar
+        mProgressBar = (ProgressBar)findViewById(R.id.progress_bar);
+
+
         // Create a new {@link ArrayAdapter} of earthquakes
         adapter = new EarthquakeAdapter(this, new ArrayList<Earthquake>());
+
         // Set the adapter on the {@link ListView}
         // so the list can be populated in the user interface
         earthquakeListView.setAdapter(adapter);
@@ -95,8 +105,13 @@ public class EarthquakeActivity extends AppCompatActivity implements android.app
     @Override
     public void onLoadFinished(android.content.Loader<ArrayList<Earthquake>> loader, ArrayList<Earthquake> earthquakes) {
 
+
+        //Hide the Loader Once the data Loading is Finished
+        mProgressBar.setVisibility(View.GONE);
+
         // Set empty state text to display "No earthquakes found."
         emptyTextView.setText(R.string.no_earthquakes);
+
         // Clear the adapter of previous earthquake data
         adapter.clear();
 
