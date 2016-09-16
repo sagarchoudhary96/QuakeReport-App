@@ -22,6 +22,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import java.util.ArrayList;
 
@@ -38,6 +39,9 @@ public class EarthquakeActivity extends AppCompatActivity implements android.app
     /** Adapter for the list of earthquakes */
     private EarthquakeAdapter adapter;
 
+    /**Empty Text View*/
+    TextView emptyTextView;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -45,6 +49,9 @@ public class EarthquakeActivity extends AppCompatActivity implements android.app
 
         // Find a reference to the {@link ListView} in the layout
         final ListView earthquakeListView = (ListView) findViewById(R.id.list);
+
+        emptyTextView = (TextView)findViewById(R.id.Empty_txtview);
+        earthquakeListView.setEmptyView(emptyTextView);
 
         // Create a new {@link ArrayAdapter} of earthquakes
         adapter = new EarthquakeAdapter(this, new ArrayList<Earthquake>());
@@ -87,8 +94,12 @@ public class EarthquakeActivity extends AppCompatActivity implements android.app
 
     @Override
     public void onLoadFinished(android.content.Loader<ArrayList<Earthquake>> loader, ArrayList<Earthquake> earthquakes) {
+
+        // Set empty state text to display "No earthquakes found."
+        emptyTextView.setText(R.string.no_earthquakes);
         // Clear the adapter of previous earthquake data
         adapter.clear();
+
 
         // If there is a valid list of {@link Earthquake}s, then add them to the adapter's
         // data set. This will trigger the ListView to update.

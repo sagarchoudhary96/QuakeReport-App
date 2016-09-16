@@ -18,4 +18,5 @@
 
     <!--Default textview to show location if no km's are not specified-->
     <string name="near_the">Near the</string>
+    <string name="no_earthquakes">No Earthquake Found!</string>
 </resources>
