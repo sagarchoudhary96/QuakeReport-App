@@ -17,6 +17,7 @@ package com.example.android.quakereport;
 
 import android.content.Intent;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
@@ -27,20 +28,22 @@ import java.util.ArrayList;
 
 public class EarthquakeActivity extends AppCompatActivity {
 
-    public static final String LOG_TAG = EarthquakeActivity.class.getName();
+    /** URL for earthquake data from the USGS dataset */
+    private static final String REQUEST_URL = " http://earthquake.usgs.gov/fdsnws/event/1/query?format=geojson&eventtype=earthquake&orderby=time&minmag=6&limit=10";
+
+    /** Adapter for the list of earthquakes */
+    private EarthquakeAdapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.earthquake_activity);
 
-        ArrayList<Earthquake> earthquakes = QueryUtils.getEarthquakesDetails();
-
         // Find a reference to the {@link ListView} in the layout
         final ListView earthquakeListView = (ListView) findViewById(R.id.list);
 
         // Create a new {@link ArrayAdapter} of earthquakes
-        final EarthquakeAdapter adapter = new EarthquakeAdapter(this, earthquakes);
+        adapter = new EarthquakeAdapter(this, new ArrayList<Earthquake>());
         // Set the adapter on the {@link ListView}
         // so the list can be populated in the user interface
         earthquakeListView.setAdapter(adapter);
@@ -60,5 +63,43 @@ public class EarthquakeActivity extends AppCompatActivity {
                 startActivity(launchUrl);
             }
         });
+
+
+        //Execute Async Task
+        new EarthquakeAsyncTask().execute(REQUEST_URL);
+
+    }
+
+
+    /**
+     *  Async Task to fetch earthquake Date and update the UI
+     */
+    private class EarthquakeAsyncTask extends AsyncTask<String, Void, ArrayList<Earthquake>>{
+
+        @Override
+        protected ArrayList<Earthquake> doInBackground(String... urls) {
+
+            // Don't perform the request if there are no URLs, or the first URL is null.
+            if (urls.length < 1 || urls[0] == null) {
+                return null;
+            }
+
+            ArrayList<Earthquake> Earthquakes = QueryUtils.fetchEarthquakeList(urls[0]);
+
+            return Earthquakes;
+
+        }
+
+        @Override
+        protected void onPostExecute(ArrayList<Earthquake> earthquakes) {
+
+            // clears the data of previous list
+            adapter.clear();
+            if (earthquakes.isEmpty()){
+                return;
+            }
+            // update the UI with the list of Earthquakes
+            adapter.addAll(earthquakes);
+        }
     }
 }
